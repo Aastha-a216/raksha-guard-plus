@@ -2,74 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Safety App Design System - Material Design 3 Inspired
-All colors MUST be HSL for consistent theming
-Safety-focused color palette with emergency red, trust blue, and calming greens
+/* Professional Safety App Design System - Enhanced UI/UX
+Material Design 3 + Apple Human Interface Guidelines inspired
+Modern colors, gradients, and premium feel
 */
 
 @layer base {
   :root {
-    /* Core Colors */
-    --background: 248 50% 98%;
-    --foreground: 222 15% 15%;
+    /* Professional Brand Colors */
+    --background: 248 100% 99%;
+    --foreground: 219 39% 11%;
 
-    /* Safety Color Palette */
-    --emergency: 0 85% 55%;
-    --emergency-foreground: 0 0% 98%;
-    --emergency-glow: 0 85% 65%;
+    /* Safety Color Palette - Enhanced */
+    --emergency: 352 87% 55%;
+    --emergency-foreground: 0 0% 100%;
+    --emergency-glow: 352 87% 65%;
+    --emergency-dark: 352 87% 45%;
 
-    --safe: 145 70% 45%;
-    --safe-foreground: 0 0% 98%;
-    --safe-glow: 145 70% 55%;
+    --safe: 142 76% 36%;
+    --safe-foreground: 0 0% 100%;
+    --safe-glow: 142 76% 46%;
+    --safe-light: 142 43% 85%;
 
-    --warning: 35 90% 55%;
-    --warning-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --warning-light: 38 92% 90%;
 
-    --trust: 220 85% 55%;
-    --trust-foreground: 0 0% 98%;
-    --trust-glow: 220 85% 65%;
+    --trust: 217 91% 60%;
+    --trust-foreground: 0 0% 100%;
+    --trust-glow: 217 91% 70%;
+    --trust-light: 217 91% 95%;
 
-    /* Material Design 3 Surface Colors */
+    --success: 142 76% 36%;
+    --info: 217 91% 60%;
+    --neutral: 220 13% 69%;
+
+    /* Premium Surface Colors */
     --card: 0 0% 100%;
-    --card-foreground: 222 15% 15%;
-    --surface: 248 50% 96%;
-    --surface-variant: 245 20% 92%;
+    --card-foreground: 219 39% 11%;
+    --surface: 248 50% 98%;
+    --surface-variant: 220 14% 96%;
+    --surface-glass: 0 0% 100% / 0.8;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 15% 15%;
+    --popover-foreground: 219 39% 11%;
 
-    --primary: 220 85% 55%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 217 91% 95%;
+    --primary-dark: 217 91% 50%;
 
-    --secondary: 145 70% 45%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 142 76% 36%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-light: 142 43% 85%;
 
-    --muted: 245 20% 92%;
-    --muted-foreground: 222 15% 45%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 35 90% 55%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 271 91% 65%;
+    --accent-foreground: 0 0% 100%;
+    --accent-light: 271 91% 95%;
 
-    --destructive: 0 85% 55%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 352 87% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 245 20% 88%;
-    --input: 245 20% 88%;
-    --ring: 220 85% 55%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 60%;
 
-    --radius: 1rem;
+    --radius: 1.5rem;
 
-    /* Gradients */
+    /* Professional Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--trust-glow)));
     --gradient-emergency: linear-gradient(135deg, hsl(var(--emergency)), hsl(var(--emergency-glow)));
     --gradient-safe: linear-gradient(135deg, hsl(var(--safe)), hsl(var(--safe-glow)));
-    --gradient-trust: linear-gradient(135deg, hsl(var(--trust)), hsl(var(--trust-glow)));
     --gradient-surface: linear-gradient(180deg, hsl(var(--background)), hsl(var(--surface)));
+    --gradient-glass: linear-gradient(135deg, hsl(var(--surface-glass)), hsl(var(--card)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--trust-glow)) 100%);
 
-    /* Shadows */
+    /* Premium Shadows */
+    --shadow-xs: 0 1px 2px 0 hsl(var(--foreground) / 0.05);
+    --shadow-sm: 0 1px 3px 0 hsl(var(--foreground) / 0.1), 0 1px 2px -1px hsl(var(--foreground) / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(var(--foreground) / 0.1), 0 2px 4px -2px hsl(var(--foreground) / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(var(--foreground) / 0.1), 0 4px 6px -4px hsl(var(--foreground) / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(var(--foreground) / 0.1), 0 8px 10px -6px hsl(var(--foreground) / 0.1);
     --shadow-emergency: 0 20px 25px -5px hsl(var(--emergency) / 0.3);
     --shadow-safe: 0 20px 25px -5px hsl(var(--safe) / 0.3);
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.4);
+    --shadow-glow: 0 0 40px hsl(var(--primary) / 0.4);
+    --shadow-inner: inset 0 2px 4px 0 hsl(var(--foreground) / 0.05);
   }
 
   .dark {
@@ -155,16 +175,26 @@ Safety-focused color palette with emergency red, trust blue, and calming greens
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  /* Glass Morphism */
+  /* Glass Morphism & Effects */
   .glass {
     backdrop-filter: blur(20px);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
+  .glass-dark {
+    backdrop-filter: blur(20px);
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   /* Background Patterns */
   .bg-gradient-surface {
     background: var(--gradient-surface);
+  }
+
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
   }
 
   .bg-gradient-emergency {
@@ -179,7 +209,35 @@ Safety-focused color palette with emergency red, trust blue, and calming greens
     background: var(--gradient-trust);
   }
 
+  .bg-gradient-glass {
+    background: var(--gradient-glass);
+  }
+
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+
   /* Shadow Utilities */
+  .shadow-xs {
+    box-shadow: var(--shadow-xs);
+  }
+
+  .shadow-sm {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .shadow-md {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-lg {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-xl {
+    box-shadow: var(--shadow-xl);
+  }
+
   .shadow-emergency {
     box-shadow: var(--shadow-emergency);
   }
@@ -188,8 +246,37 @@ Safety-focused color palette with emergency red, trust blue, and calming greens
     box-shadow: var(--shadow-safe);
   }
 
-  .shadow-elegant {
-    box-shadow: var(--shadow-elegant);
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-inner {
+    box-shadow: var(--shadow-inner);
+  }
+
+  /* Premium Hover Effects */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  /* Gradient Text */
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-hero {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 

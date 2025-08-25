@@ -3,19 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import { 
   Shield, 
   Users, 
   History, 
   Settings, 
-  Phone, 
   MapPin, 
-  Timer,
   ChevronRight,
   AlertTriangle,
-  CheckCircle
+  Camera,
+  Mic
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -26,7 +23,7 @@ import BottomNavigation from '@/components/ui/BottomNavigation';
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, userProfile, signOut } = useAuth();
+  const { user, userProfile } = useAuth();
   const [lastSosActivity, setLastSosActivity] = useState<any>(null);
   const [emergencyContacts, setEmergencyContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -124,13 +121,19 @@ const Dashboard = () => {
 
   const startMediaCapture = async (sessionId: string) => {
     try {
-      // Request camera and microphone access
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: true, 
-        audio: true 
-      });
+      // Auto-capture both audio and image for comprehensive emergency recording
+      await Promise.all([
+        captureAudio(sessionId),
+        captureImage(sessionId)
+      ]);
+    } catch (error) {
+      console.error('Error starting media capture:', error);
+    }
+  };
 
-      // Create MediaRecorder for audio
+  const captureAudio = async (sessionId: string) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
 
@@ -145,7 +148,10 @@ const Dashboard = () => {
         // Upload to Supabase storage
         const { error: uploadError } = await supabase.storage
           .from('suraksha')
-          .upload(`recordings/${fileName}`, blob);
+          .upload(`recordings/${fileName}`, blob, {
+            cacheControl: '3600',
+            upsert: false
+          });
 
         if (!uploadError) {
           // Save recording metadata
@@ -158,23 +164,70 @@ const Dashboard = () => {
               file_path: `recordings/${fileName}`,
               recording_type: 'audio',
               file_size: blob.size,
-              duration_seconds: 30, // Approximate
+              duration_seconds: 30,
               mime_type: blob.type
             });
         }
+
+        stream.getTracks().forEach(track => track.stop());
       };
 
-      // Start recording
       mediaRecorder.start();
-
-      // Stop recording after 30 seconds
       setTimeout(() => {
         mediaRecorder.stop();
-        stream.getTracks().forEach(track => track.stop());
       }, 30000);
 
     } catch (error) {
-      console.error('Error starting media capture:', error);
+      console.error('Error capturing audio:', error);
+    }
+  };
+
+  const captureImage = async (sessionId: string) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+
+      video.addEventListener('loadedmetadata', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        const context = canvas.getContext('2d');
+        context?.drawImage(video, 0, 0);
+        
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            const fileName = `emergency-image-${Date.now()}.jpg`;
+            
+            const { error: uploadError } = await supabase.storage
+              .from('suraksha')
+              .upload(`recordings/${fileName}`, blob, {
+                cacheControl: '3600',
+                upsert: false
+              });
+
+            if (!uploadError) {
+              await supabase
+                .from('emergency_recordings')
+                .insert({
+                  emergency_session_id: sessionId,
+                  user_id: user?.id,
+                  file_name: fileName,
+                  file_path: `recordings/${fileName}`,
+                  recording_type: 'image',
+                  file_size: blob.size,
+                  mime_type: blob.type
+                });
+            }
+          }
+          stream.getTracks().forEach(track => track.stop());
+        }, 'image/jpeg', 0.8);
+      });
+
+    } catch (error) {
+      console.error('Error capturing image:', error);
     }
   };
 
@@ -188,43 +241,64 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-surface">
-      {/* Header */}
-      <header className="bg-card/80 backdrop-blur-md border-b border-border/50 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-trust rounded-full flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">
-                  Welcome back, {userProfile?.name || 'User'}
-                </h1>
-                <p className="text-sm text-muted-foreground">Stay safe today</p>
-              </div>
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => navigate('/settings')}
-            >
-              <Settings className="w-4 h-4" />
-            </Button>
+      <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Header with Premium Design */}
+        <div className="flex items-center justify-between p-6 bg-card rounded-2xl shadow-lg border border-border/50">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              Welcome back, {userProfile?.name || 'User'}
+            </h1>
+            <p className="text-muted-foreground text-lg">Stay safe and connected 🛡️</p>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate('/settings')}
+            className="hover:bg-primary/10 rounded-xl transition-all duration-300 hover:scale-105"
+          >
+            <Settings className="h-6 w-6" />
+          </Button>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-6 pb-24 space-y-6">
-        {/* Emergency Button Section */}
-        <Card className="shadow-elegant">
-          <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <h2 className="text-2xl font-bold text-foreground">Emergency Alert</h2>
-              <p className="text-muted-foreground">
-                Press and hold for 3 seconds to activate emergency alert
-              </p>
+        {/* Emergency Alert Section - Enhanced */}
+        <Card className="border-emergency/20 bg-gradient-to-br from-emergency/5 via-emergency/10 to-emergency/5 shadow-emergency/20 shadow-xl">
+          <CardContent className="p-8">
+            <div className="text-center space-y-8">
+              <div className="space-y-3">
+                <h2 className="text-3xl font-bold text-emergency flex items-center justify-center gap-2">
+                  <Shield className="h-8 w-8" />
+                  Emergency Alert
+                </h2>
+                <p className="text-muted-foreground text-lg">
+                  Hold the SOS button for 3 seconds to activate emergency protocols
+                </p>
+              </div>
+              
               <EmergencyButton onEmergencyActivate={handleEmergencyActivate} />
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="flex flex-col items-center space-y-2 p-4 bg-safe/10 rounded-xl border border-safe/20">
+                  <div className="w-3 h-3 bg-safe rounded-full animate-pulse"></div>
+                  <span className="font-medium text-safe">Location Tracking</span>
+                  <span className="text-xs text-muted-foreground text-center">
+                    Continuous GPS monitoring
+                  </span>
+                </div>
+                <div className="flex flex-col items-center space-y-2 p-4 bg-trust/10 rounded-xl border border-trust/20">
+                  <div className="w-3 h-3 bg-trust rounded-full animate-pulse"></div>
+                  <span className="font-medium text-trust">Contact Alerts</span>
+                  <span className="text-xs text-muted-foreground text-center">
+                    Instant emergency notifications
+                  </span>
+                </div>
+                <div className="flex flex-col items-center space-y-2 p-4 bg-warning/10 rounded-xl border border-warning/20">
+                  <div className="w-3 h-3 bg-warning rounded-full animate-pulse"></div>
+                  <span className="font-medium text-warning">Media Capture</span>
+                  <span className="text-xs text-muted-foreground text-center">
+                    Audio & image recording
+                  </span>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -232,44 +306,52 @@ const Dashboard = () => {
         {/* Safety Timer */}
         <SafetyTimer />
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4">
-          <Card 
-            className="cursor-pointer hover:shadow-lg transition-all"
-            onClick={() => navigate('/emergency-contacts')}
-          >
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-safe rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-white" />
+        {/* Quick Actions - Enhanced */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 bg-gradient-to-br from-trust/5 to-trust/10 border-trust/20" onClick={() => navigate('/emergency-contacts')}>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="p-4 bg-trust/20 rounded-xl group-hover:bg-trust/30 transition-colors">
+                  <Users className="h-7 w-7 text-trust" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold">Contacts</h3>
+                <div>
+                  <h3 className="text-xl font-bold">Contacts</h3>
                   <p className="text-sm text-muted-foreground">
-                    {emergencyContacts.length} emergency contacts
+                    {userProfile?.emergency_contacts?.length || 0} contacts added
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
 
-          <Card 
-            className="cursor-pointer hover:shadow-lg transition-all"
-            onClick={() => navigate('/history')}
-          >
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-trust rounded-lg flex items-center justify-center">
-                  <History className="w-5 h-5 text-white" />
+          <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 bg-gradient-to-br from-safe/5 to-safe/10 border-safe/20" onClick={() => navigate('/history')}>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="p-4 bg-safe/20 rounded-xl group-hover:bg-safe/30 transition-colors">
+                  <History className="h-7 w-7 text-safe" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold">History</h3>
+                <div>
+                  <h3 className="text-xl font-bold">History</h3>
                   <p className="text-sm text-muted-foreground">
-                    Activity logs
+                    View safety activity log
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20" onClick={() => navigate('/map-view')}>
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-4">
+                <div className="p-4 bg-accent/20 rounded-xl group-hover:bg-accent/30 transition-colors">
+                  <MapPin className="h-7 w-7 text-accent" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Live Map</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Real-time location view
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -277,34 +359,35 @@ const Dashboard = () => {
 
         {/* Last SOS Activity */}
         {lastSosActivity && (
-          <Card>
+          <Card className="border-warning/20 bg-gradient-to-br from-warning/5 to-warning/10">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <AlertTriangle className="w-5 h-5 text-warning" />
+              <CardTitle className="flex items-center space-x-2 text-warning">
+                <AlertTriangle className="w-6 h-6" />
                 <span>Last Emergency Activity</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Status</span>
-                  <Badge variant={lastSosActivity.status === 'active' ? 'destructive' : 'secondary'}>
+                  <span className="text-sm font-medium text-muted-foreground">Status</span>
+                  <Badge variant={lastSosActivity.status === 'active' ? 'destructive' : 'secondary'} className="px-3 py-1">
                     {lastSosActivity.status}
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Date</span>
-                  <span className="text-sm">
+                  <span className="text-sm font-medium text-muted-foreground">Date</span>
+                  <span className="text-sm font-medium">
                     {new Date(lastSosActivity.created_at).toLocaleDateString()}
                   </span>
                 </div>
                 {lastSosActivity.location_lat && (
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Location</span>
+                    <span className="text-sm font-medium text-muted-foreground">Location</span>
                     <Button 
                       variant="link" 
                       size="sm"
-                      onClick={() => navigate('/map')}
+                      onClick={() => navigate('/map-view')}
+                      className="p-0 h-auto text-primary hover:text-primary/80"
                     >
                       <MapPin className="w-3 h-3 mr-1" />
                       View on Map
@@ -318,7 +401,7 @@ const Dashboard = () => {
 
         {/* Safety Tips */}
         <SafetyTipsCarousel />
-      </main>
+      </div>
 
       {/* Bottom Navigation */}
       <BottomNavigation />
