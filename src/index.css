@@ -2,83 +2,95 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Professional Safety App Design System - Enhanced UI/UX
-Material Design 3 + Apple Human Interface Guidelines inspired
-Modern colors, gradients, and premium feel
+/* Raksha Bandhan - Suraksha App Design System 
+Material Design 3 inspired for Women's Safety
+Trustworthy, Vibrant, and Professional UI/UX
 */
 
 @layer base {
   :root {
-    /* Professional Brand Colors */
-    --background: 248 100% 99%;
-    --foreground: 219 39% 11%;
+    /* Trustworthy Brand Colors for Women's Safety */
+    --background: 340 15% 98%;
+    --foreground: 200 25% 15%;
 
-    /* Safety Color Palette - Enhanced */
-    --emergency: 352 87% 55%;
+    /* Safety Color Palette - Women-Focused */
+    --emergency: 358 75% 59%;
     --emergency-foreground: 0 0% 100%;
-    --emergency-glow: 352 87% 65%;
-    --emergency-dark: 352 87% 45%;
+    --emergency-glow: 358 85% 70%;
+    --emergency-dark: 358 75% 45%;
+    --emergency-light: 358 75% 95%;
 
-    --safe: 142 76% 36%;
+    --safe: 125 65% 48%;
     --safe-foreground: 0 0% 100%;
-    --safe-glow: 142 76% 46%;
-    --safe-light: 142 43% 85%;
+    --safe-glow: 125 75% 60%;
+    --safe-light: 125 45% 92%;
 
-    --warning: 38 92% 50%;
+    --warning: 35 85% 55%;
     --warning-foreground: 0 0% 100%;
-    --warning-light: 38 92% 90%;
+    --warning-light: 35 85% 92%;
+    --warning-glow: 35 95% 70%;
 
-    --trust: 217 91% 60%;
+    --trust: 200 85% 60%;
     --trust-foreground: 0 0% 100%;
-    --trust-glow: 217 91% 70%;
-    --trust-light: 217 91% 95%;
+    --trust-glow: 200 95% 75%;
+    --trust-light: 200 75% 95%;
+    --trust-dark: 200 85% 45%;
 
-    --success: 142 76% 36%;
-    --info: 217 91% 60%;
-    --neutral: 220 13% 69%;
+    --protection: 280 65% 65%;
+    --protection-foreground: 0 0% 100%;
+    --protection-glow: 280 75% 80%;
+    --protection-light: 280 45% 95%;
 
-    /* Premium Surface Colors */
-    --card: 0 0% 100%;
-    --card-foreground: 219 39% 11%;
-    --surface: 248 50% 98%;
-    --surface-variant: 220 14% 96%;
-    --surface-glass: 0 0% 100% / 0.8;
+    --confidence: 25 85% 60%;
+    --confidence-foreground: 0 0% 100%;
+    --confidence-light: 25 65% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 219 39% 11%;
+    /* Soft Surface Colors */
+    --card: 340 20% 99%;
+    --card-foreground: 200 25% 15%;
+    --surface: 340 15% 97%;
+    --surface-variant: 330 12% 95%;
+    --surface-glass: 340 20% 99% / 0.85;
+    --surface-elevated: 340 25% 99%;
 
-    --primary: 217 91% 60%;
+    --popover: 340 20% 99%;
+    --popover-foreground: 200 25% 15%;
+
+    --primary: 200 85% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 217 91% 95%;
-    --primary-dark: 217 91% 50%;
+    --primary-light: 200 75% 95%;
+    --primary-dark: 200 85% 45%;
 
-    --secondary: 142 76% 36%;
+    --secondary: 280 65% 65%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-light: 142 43% 85%;
+    --secondary-light: 280 45% 95%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 330 12% 95%;
+    --muted-foreground: 200 15% 55%;
 
-    --accent: 271 91% 65%;
+    --accent: 358 75% 65%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 271 91% 95%;
+    --accent-light: 358 55% 95%;
 
-    --destructive: 352 87% 55%;
+    --destructive: 358 75% 59%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 217 91% 60%;
+    --border: 330 15% 90%;
+    --input: 330 15% 93%;
+    --ring: 200 85% 60%;
 
-    --radius: 1.5rem;
+    --radius: 1.25rem;
 
-    /* Professional Gradients */
+    /* Beautiful Gradients for Women's Safety App */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--trust-glow)));
     --gradient-emergency: linear-gradient(135deg, hsl(var(--emergency)), hsl(var(--emergency-glow)));
     --gradient-safe: linear-gradient(135deg, hsl(var(--safe)), hsl(var(--safe-glow)));
+    --gradient-protection: linear-gradient(135deg, hsl(var(--protection)), hsl(var(--protection-glow)));
     --gradient-surface: linear-gradient(180deg, hsl(var(--background)), hsl(var(--surface)));
     --gradient-glass: linear-gradient(135deg, hsl(var(--surface-glass)), hsl(var(--card)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--trust-glow)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--protection-glow)) 100%);
+    --gradient-trust: linear-gradient(135deg, hsl(var(--trust)) 0%, hsl(var(--trust-glow)) 100%);
+    --gradient-confidence: linear-gradient(135deg, hsl(var(--confidence)) 0%, hsl(var(--protection)) 100%);
 
     /* Premium Shadows */
     --shadow-xs: 0 1px 2px 0 hsl(var(--foreground) / 0.05);
@@ -115,7 +127,7 @@ Modern colors, gradients, and premium feel
 }
 
 @layer utilities {
-  /* Emergency Animations */
+  /* Enhanced Emergency Animations */
   .sos-pulse {
     animation: sos-pulse 2s infinite;
   }
@@ -123,11 +135,13 @@ Modern colors, gradients, and premium feel
   @keyframes sos-pulse {
     0%, 100% { 
       transform: scale(1);
-      box-shadow: 0 0 0 0 hsl(var(--emergency) / 0.7);
+      box-shadow: 0 0 0 0 hsl(var(--emergency) / 0.7), 
+                  0 0 30px hsl(var(--emergency) / 0.4);
     }
     50% { 
-      transform: scale(1.1);
-      box-shadow: 0 0 0 20px hsl(var(--emergency) / 0);
+      transform: scale(1.05);
+      box-shadow: 0 0 0 25px hsl(var(--emergency) / 0),
+                  0 0 50px hsl(var(--emergency) / 0.6);
     }
   }
 
@@ -159,20 +173,44 @@ Modern colors, gradients, and premium feel
     animation: sos-glow 2s ease-in-out infinite;
   }
 
-  /* Shake Animation */
+  /* Enhanced Shake Animation */
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+    20%, 40%, 60%, 80% { transform: translateX(3px); }
   }
 
   .animate-shake {
-    animation: shake 0.5s ease-in-out;
+    animation: shake 0.4s ease-in-out;
   }
 
-  /* Smooth Transitions */
+  /* Smooth Material Design Transitions */
   .transition-smooth {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .transition-spring {
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* Float Animation for Cards */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-4px); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Slide In Animations */
+  @keyframes slide-in-up {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .animate-slide-in-up {
+    animation: slide-in-up 0.6s ease-out;
   }
 
   /* Glass Morphism & Effects */

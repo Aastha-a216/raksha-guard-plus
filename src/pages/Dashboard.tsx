@@ -242,119 +242,162 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-surface">
       <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Header with Premium Design */}
-        <div className="flex items-center justify-between p-6 bg-card rounded-2xl shadow-lg border border-border/50">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Welcome back, {userProfile?.name || 'User'}
-            </h1>
-            <p className="text-muted-foreground text-lg">Stay safe and connected 🛡️</p>
+        {/* Header with Elegant Design */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-hero opacity-10 rounded-3xl"></div>
+          <div className="relative flex items-center justify-between p-8 bg-surface-elevated/80 backdrop-blur-xl rounded-3xl shadow-xl border border-border/30">
+            <div className="space-y-2">
+              <h1 className="text-3xl font-bold text-gradient-hero">
+                Welcome back, {userProfile?.name || 'Sister'}
+              </h1>
+              <p className="text-muted-foreground text-lg flex items-center gap-2">
+                <Shield className="w-5 h-5 text-primary" />
+                You're protected and connected
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate('/settings')}
+              className="hover:bg-primary/10 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            >
+              <Settings className="h-6 w-6 text-primary" />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/settings')}
-            className="hover:bg-primary/10 rounded-xl transition-all duration-300 hover:scale-105"
-          >
-            <Settings className="h-6 w-6" />
-          </Button>
         </div>
 
-        {/* Emergency Alert Section - Enhanced */}
-        <Card className="border-emergency/20 bg-gradient-to-br from-emergency/5 via-emergency/10 to-emergency/5 shadow-emergency/20 shadow-xl">
-          <CardContent className="p-8">
-            <div className="text-center space-y-8">
-              <div className="space-y-3">
-                <h2 className="text-3xl font-bold text-emergency flex items-center justify-center gap-2">
-                  <Shield className="h-8 w-8" />
-                  Emergency Alert
-                </h2>
-                <p className="text-muted-foreground text-lg">
-                  Hold the SOS button for 3 seconds to activate emergency protocols
-                </p>
+        {/* Emergency Center - Redesigned for Trust */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-emergency opacity-5 rounded-3xl"></div>
+          <Card className="relative border-emergency/30 bg-surface-elevated/90 backdrop-blur-xl shadow-2xl shadow-emergency/10">
+            <CardContent className="p-10">
+              <div className="text-center space-y-10">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-center gap-3 mb-2">
+                    <div className="w-2 h-2 bg-emergency rounded-full animate-pulse"></div>
+                    <h2 className="text-3xl font-bold text-emergency">Emergency Response Center</h2>
+                    <div className="w-2 h-2 bg-emergency rounded-full animate-pulse"></div>
+                  </div>
+                  <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
+                    Your safety is our priority. One press connects you instantly to your trusted network with location tracking and evidence collection.
+                  </p>
+                </div>
+                
+                <EmergencyButton onEmergencyActivate={handleEmergencyActivate} />
+                
+                {/* Safety Features Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="group p-6 bg-safe/10 hover:bg-safe/20 rounded-2xl border border-safe/20 hover:border-safe/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="w-12 h-12 bg-safe/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <MapPin className="w-6 h-6 text-safe" />
+                      </div>
+                      <span className="font-semibold text-safe text-lg">Live Location</span>
+                      <span className="text-sm text-muted-foreground text-center leading-relaxed">
+                        Real-time GPS tracking shared with your emergency contacts
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="group p-6 bg-trust/10 hover:bg-trust/20 rounded-2xl border border-trust/20 hover:border-trust/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="w-12 h-12 bg-trust/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Users className="w-6 h-6 text-trust" />
+                      </div>
+                      <span className="font-semibold text-trust text-lg">Instant Alerts</span>
+                      <span className="text-sm text-muted-foreground text-center leading-relaxed">
+                        Immediate notifications to all your trusted contacts
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="group p-6 bg-protection/10 hover:bg-protection/20 rounded-2xl border border-protection/20 hover:border-protection/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <div className="flex flex-col items-center space-y-3">
+                      <div className="w-12 h-12 bg-protection/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Camera className="w-6 h-6 text-protection" />
+                      </div>
+                      <span className="font-semibold text-protection text-lg">Smart Recording</span>
+                      <span className="text-sm text-muted-foreground text-center leading-relaxed">
+                        Automatic audio and visual evidence collection
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              
-              <EmergencyButton onEmergencyActivate={handleEmergencyActivate} />
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div className="flex flex-col items-center space-y-2 p-4 bg-safe/10 rounded-xl border border-safe/20">
-                  <div className="w-3 h-3 bg-safe rounded-full animate-pulse"></div>
-                  <span className="font-medium text-safe">Location Tracking</span>
-                  <span className="text-xs text-muted-foreground text-center">
-                    Continuous GPS monitoring
-                  </span>
-                </div>
-                <div className="flex flex-col items-center space-y-2 p-4 bg-trust/10 rounded-xl border border-trust/20">
-                  <div className="w-3 h-3 bg-trust rounded-full animate-pulse"></div>
-                  <span className="font-medium text-trust">Contact Alerts</span>
-                  <span className="text-xs text-muted-foreground text-center">
-                    Instant emergency notifications
-                  </span>
-                </div>
-                <div className="flex flex-col items-center space-y-2 p-4 bg-warning/10 rounded-xl border border-warning/20">
-                  <div className="w-3 h-3 bg-warning rounded-full animate-pulse"></div>
-                  <span className="font-medium text-warning">Media Capture</span>
-                  <span className="text-xs text-muted-foreground text-center">
-                    Audio & image recording
-                  </span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Safety Timer */}
         <SafetyTimer />
 
-        {/* Quick Actions - Enhanced */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 bg-gradient-to-br from-trust/5 to-trust/10 border-trust/20" onClick={() => navigate('/emergency-contacts')}>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="p-4 bg-trust/20 rounded-xl group-hover:bg-trust/30 transition-colors">
-                  <Users className="h-7 w-7 text-trust" />
+        {/* Quick Actions - Enhanced with Modern Design */}
+        <div className="space-y-4">
+          <h3 className="text-2xl font-bold text-foreground">Safety Tools</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="group hover:shadow-2xl transition-all duration-500 cursor-pointer hover:-translate-y-2 bg-gradient-to-br from-trust/5 via-trust/10 to-trust/15 border-trust/30 hover:border-trust/50 animate-float" 
+                  onClick={() => navigate('/emergency-contacts')}
+                  style={{ animationDelay: '0s' }}>
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="p-6 bg-trust/20 rounded-3xl group-hover:bg-trust/30 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                    <Users className="h-8 w-8 text-trust" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold text-trust">Trusted Contacts</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {userProfile?.emergency_contacts?.length || 0} contacts ready to help
+                    </p>
+                    <div className="flex items-center justify-center gap-1 mt-2">
+                      <ChevronRight className="w-4 h-4 text-trust/60 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold">Contacts</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {userProfile?.emergency_contacts?.length || 0} contacts added
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 bg-gradient-to-br from-safe/5 to-safe/10 border-safe/20" onClick={() => navigate('/history')}>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="p-4 bg-safe/20 rounded-xl group-hover:bg-safe/30 transition-colors">
-                  <History className="h-7 w-7 text-safe" />
+            <Card className="group hover:shadow-2xl transition-all duration-500 cursor-pointer hover:-translate-y-2 bg-gradient-to-br from-safe/5 via-safe/10 to-safe/15 border-safe/30 hover:border-safe/50 animate-float" 
+                  onClick={() => navigate('/history')}
+                  style={{ animationDelay: '0.2s' }}>
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="p-6 bg-safe/20 rounded-3xl group-hover:bg-safe/30 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                    <History className="h-8 w-8 text-safe" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold text-safe">Safety History</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Track your safety activities
+                    </p>
+                    <div className="flex items-center justify-center gap-1 mt-2">
+                      <ChevronRight className="w-4 h-4 text-safe/60 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold">History</h3>
-                  <p className="text-sm text-muted-foreground">
-                    View safety activity log
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card className="group hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 bg-gradient-to-br from-accent/5 to-accent/10 border-accent/20" onClick={() => navigate('/map-view')}>
-            <CardContent className="p-6">
-              <div className="flex items-center space-x-4">
-                <div className="p-4 bg-accent/20 rounded-xl group-hover:bg-accent/30 transition-colors">
-                  <MapPin className="h-7 w-7 text-accent" />
+            <Card className="group hover:shadow-2xl transition-all duration-500 cursor-pointer hover:-translate-y-2 bg-gradient-to-br from-protection/5 via-protection/10 to-protection/15 border-protection/30 hover:border-protection/50 animate-float" 
+                  onClick={() => navigate('/map-view')}
+                  style={{ animationDelay: '0.4s' }}>
+              <CardContent className="p-8">
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="p-6 bg-protection/20 rounded-3xl group-hover:bg-protection/30 group-hover:scale-110 transition-all duration-300 shadow-lg">
+                    <MapPin className="h-8 w-8 text-protection" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold text-protection">Live Location</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Real-time tracking & sharing
+                    </p>
+                    <div className="flex items-center justify-center gap-1 mt-2">
+                      <ChevronRight className="w-4 h-4 text-protection/60 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold">Live Map</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Real-time location view
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Last SOS Activity */}

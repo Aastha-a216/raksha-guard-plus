@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Shield } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Shield, Heart, AlertTriangle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 interface EmergencyButtonProps {
@@ -9,116 +9,126 @@ interface EmergencyButtonProps {
 
 const EmergencyButton = ({ onEmergencyActivate }: EmergencyButtonProps) => {
   const [isPressed, setIsPressed] = useState(false);
-  const [holdTimer, setHoldTimer] = useState<NodeJS.Timeout | null>(null);
-  const [progress, setProgress] = useState(0);
+  const [pressTimer, setPressTimer] = useState<NodeJS.Timeout | null>(null);
+  const [countdown, setCountdown] = useState(3);
   const { toast } = useToast();
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (isPressed && countdown > 0) {
+      interval = setInterval(() => {
+        setCountdown(prev => {
+          if (prev <= 1) {
+            handleEmergencyActivate();
+            setIsPressed(false);
+            return 3;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isPressed, countdown]);
 
   const handleMouseDown = () => {
     setIsPressed(true);
-    setProgress(0);
-    
-    const timer = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(timer);
-          handleEmergencyActivate();
-          return 100;
-        }
-        return prev + (100 / 30); // 3 seconds = 30 intervals of 100ms
-      });
-    }, 100);
-
-    const holdTimeout = setTimeout(() => {
-      clearInterval(timer);
-    }, 3000);
-
-    setHoldTimer(holdTimeout);
+    setCountdown(3);
   };
 
   const handleMouseUp = () => {
     setIsPressed(false);
-    setProgress(0);
-    if (holdTimer) {
-      clearTimeout(holdTimer);
-      setHoldTimer(null);
+    setCountdown(3);
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
     }
   };
 
   const handleEmergencyActivate = () => {
     setIsPressed(false);
-    setProgress(0);
+    setCountdown(3);
     onEmergencyActivate();
 
     toast({
       title: "🚨 Emergency Alert Activated",
       description: "Your emergency contacts have been notified and location tracking is active",
     });
-
-    // Visual feedback
-    setTimeout(() => setIsPressed(false), 2000);
   };
 
   return (
-    <div className="relative flex flex-col items-center space-y-4">
+    <div className="flex flex-col items-center space-y-8">
       <div className="relative">
+        {/* Outer protective rings */}
+        <div className={`absolute inset-[-40px] rounded-full ${isPressed ? 'animate-sos-ripple' : ''}`}>
+          <div className="w-full h-full rounded-full border-2 border-emergency/20 bg-emergency/5"></div>
+        </div>
+        <div className={`absolute inset-[-20px] rounded-full ${isPressed ? 'animate-sos-ripple' : ''} animation-delay-300`}>
+          <div className="w-full h-full rounded-full border-3 border-emergency/30 bg-emergency/10"></div>
+        </div>
+        
+        {/* Main SOS Button - Enhanced for Women's Safety */}
         <Button
+          className={`
+            w-40 h-40 rounded-full bg-gradient-emergency shadow-2xl
+            border-4 border-white/30 backdrop-blur-sm
+            flex flex-col items-center justify-center
+            transition-all duration-500 hover:scale-105
+            ${isPressed ? 'sos-pulse animate-sos-glow scale-110 shadow-emergency' : 'hover:shadow-xl hover:shadow-emergency/50'}
+            active:scale-95 relative overflow-hidden
+          `}
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onTouchStart={handleMouseDown}
           onTouchEnd={handleMouseUp}
-          className={`
-            relative h-32 w-32 rounded-full bg-gradient-emergency text-emergency-foreground
-            shadow-emergency transition-all duration-300 hover:scale-105
-            ${isPressed ? 'sos-pulse scale-110' : 'animate-sos-glow'}
-            border-4 border-emergency-glow/30
-          `}
         >
-          <div className="flex flex-col items-center space-y-1">
-            <Shield className="h-10 w-10" />
-            <span className="text-lg font-bold">SOS</span>
+          {/* Background pattern */}
+          <div className="absolute inset-0 bg-white/10 rounded-full opacity-50"></div>
+          
+          {/* Icons */}
+          <div className="relative z-10 flex flex-col items-center">
+            {isPressed ? (
+              <Heart className="w-14 h-14 mb-2 text-white animate-pulse" />
+            ) : (
+              <Shield className="w-14 h-14 mb-2 text-white" />
+            )}
+            <span className="text-xl font-bold text-white tracking-wider">SOS</span>
           </div>
         </Button>
-
-        {/* Progress Ring */}
-        {isPressed && (
-          <div className="absolute inset-0 rounded-full">
-            <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-              <circle
-                cx="50"
-                cy="50"
-                r="46"
-                stroke="rgba(255, 255, 255, 0.3)"
-                strokeWidth="4"
-                fill="none"
-              />
-              <circle
-                cx="50"
-                cy="50"
-                r="46"
-                stroke="white"
-                strokeWidth="4"
-                fill="none"
-                strokeDasharray={`${2 * Math.PI * 46}`}
-                strokeDashoffset={`${2 * Math.PI * 46 * (1 - progress / 100)}`}
-                className="transition-all duration-100 ease-out"
-              />
-            </svg>
-          </div>
-        )}
-
-        {/* Ripple effect rings */}
-        <div className="absolute inset-0 rounded-full border-2 border-emergency/30 animate-sos-ripple pointer-events-none" />
-        <div className="absolute inset-0 rounded-full border-2 border-emergency/20 animate-sos-ripple pointer-events-none" style={{ animationDelay: '0.5s' }} />
       </div>
       
-      <div className="text-center space-y-1">
-        <p className="text-sm font-medium text-foreground">
-          Hold for Emergency
-        </p>
-        <p className="text-xs text-muted-foreground">
-          Activates location tracking & alerts contacts
-        </p>
+      {/* Enhanced Instructions */}
+      <div className="text-center space-y-3 max-w-sm">
+        {isPressed ? (
+          <div className="space-y-3 animate-slide-in-up">
+            <div className="text-4xl font-bold text-emergency animate-pulse">
+              {countdown}
+            </div>
+            <p className="text-base font-medium text-emergency">
+              Activating Emergency Response...
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Release to cancel • Help is on the way
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <h3 className="text-xl font-bold text-emergency flex items-center justify-center gap-2">
+              <AlertTriangle className="w-5 h-5" />
+              Emergency SOS
+            </h3>
+            <p className="text-base text-foreground font-medium">
+              Hold for 3 seconds to activate
+            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Instantly alerts your emergency contacts with location, starts recording, and notifies authorities
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
